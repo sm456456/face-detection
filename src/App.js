@@ -6,6 +6,40 @@ import Logo from "./components/Logo/Logo"
 import ImageInputForm from "./components/ImageInputForm/ImageInputForm"
 import FaceDetection from "./components/FaceDetection/FaceDetection"
 
+const particleParams = {
+  particles: {
+    number: {
+      value: 50
+    },
+    size: {
+      value: 2,
+      density: {
+        enable: true,
+        value_area: 900
+      },
+      random: true,
+      anim: {
+        enable: true,
+        speed: 1
+      }
+    },
+    shape: {
+      type: "square",
+      stroke: {
+        width: 6,
+        color: "#f9ab00"
+      }
+    }
+  },
+  interactivity: {
+    events: {
+      onhover: {
+        enable: true,
+        mode: "repulse"
+      }
+    }
+  }
+}
 const initialState = {
   input: "",
   imageUrl: "",
@@ -29,7 +63,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Particles params={{}} />
+        <Particles
+          className="App-particles__container"
+          params={particleParams}
+        />
         <Navigation />
         <Logo />
         <ImageInputForm />
