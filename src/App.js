@@ -8,10 +8,6 @@ import FaceDetection from "./components/FaceDetection/FaceDetection"
 import Rank from "./components/Rank/Rank"
 import Clarifai from "clarifai"
 
-const app = new Clarifai.App({
-  apiKey: "c8ce1b46b6754303a017e95566162d04"
-})
-
 const particleParams = {
   particles: {
     number: {
@@ -55,40 +51,44 @@ const initialState = {
     joined: ""
   }
 }
+
+const app = new Clarifai.App({
+  apiKey: "c8ce1b46b6754303a017e95566162d04"
+})
+
 class App extends Component {
   constructor() {
     super()
     this.state = initialState
   }
 
-  // onInputChange = e => {
-  //   this.setState({ input: e.target.value })
-  // }
+  displayFaceBox = box => {
+    this.setState({ box: box })
+  }
+
+  onInputChange = e => {
+    this.setState({ input: e.target.value })
+  }
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input })
 
     app.models
-      .predict(
-        {
-          id: "c8ce1b46b6754303a017e95566162d04"
-        },
-        //Cant use imageUrl
-        this.state.input
-      )
-      .then(
-        function (response) {
-          console.log(
-            response.outputs[0].data.regions[0].region_info.bounding_box
-          )
-        },
-        function (err) {
-          //there was an error
-        }
-      )
+      .initModel({
+        id: Clarifai.FACE_DETECT_MODEL
+      })
+      .then(faceDetectModel => {
+        return faceDetectModel.predict(
+          "https://samples.clarifai.com/face-det.jpg"
+        )
+      })
+      .then(response => {
+        console.log(response)
+      })
   }
 
   render() {
+    const { imageUrl, box } = this.state
     return (
       <div className="App">
         <Particles
@@ -98,8 +98,11 @@ class App extends Component {
         <Navigation />
         <Logo />
         <Rank />
-        <ImageInputForm onButtonSubmit={this.onButtonSubmit} />
-        <FaceDetection />
+        <ImageInputForm
+          onInputChange={this.onInputChange}
+          onButtonSubmit={this.onButtonSubmit}
+        />
+        <FaceDetection box={box} imageUrl={imageUrl} />
       </div>
     )
   }
