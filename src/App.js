@@ -74,16 +74,25 @@ class App extends Component {
     this.setState({ imageUrl: this.state.input })
 
     app.models
-      .initModel({
-        id: Clarifai.FACE_DETECT_MODEL
-      })
-      .then(faceDetectModel => {
-        return faceDetectModel.predict(
-          "https://samples.clarifai.com/face-det.jpg"
+      // .initModel({
+      //   id: Clarifai.FACE_DETECT_MODEL
+      // })
+      // .then(faceDetectModel => {
+      //   return faceDetectModel.predict(
+      //     "https://samples.clarifai.com/face-det.jpg"
+      //   )
+      // })
+      // .then(response => {
+      //   console.log(response)
+      // })
+      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      .then(response => {
+        console.log(
+          response.outputs[0].data.regions[0].region_info.bounding_box
         )
       })
-      .then(response => {
-        console.log(response)
+      .catch(err => {
+        console.log(err)
       })
   }
 
