@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import "./App.css"
 import Particles from "react-particles-js"
 import Navigation from "./components/Navigation/Navigation"
 import Logo from "./components/Logo/Logo"
@@ -9,6 +8,7 @@ import Rank from "./components/Rank/Rank"
 import Signin from "./components/Signin.js/Signin"
 import Register from "./components/Register/Register"
 import Clarifai from "clarifai"
+import "./App.css"
 
 const particleParams = {
   particles: {
@@ -98,30 +98,49 @@ class App extends Component {
     this.setState({ input: e.target.value })
   }
 
+  // onButtonSubmit = () => {
+  //   this.setState({ imageUrl: this.state.input })
+
+  //   app.models
+  //     .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+  //     .then(response => {
+  //       console.log(
+  //         response.outputs[0].data.regions[0].region_info.bounding_box
+  //       )
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //     })
+  // }
+
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input })
-
-    app.models
-      // .initModel({
-      //   id: Clarifai.FACE_DETECT_MODEL
-      // })
-      // .then(faceDetectModel => {
-      //   return faceDetectModel.predict(
-      //     "https://samples.clarifai.com/face-det.jpg"
-      //   )
-      // })
-      // .then(response => {
-      //   console.log(response)
-      // })
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+    fetch("http://localhost:3000/imageurl", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    })
+      .then(response => response.json())
       .then(response => {
-        console.log(
-          response.outputs[0].data.regions[0].region_info.bounding_box
-        )
+        if (response) {
+          fetch("http://localhost:3000/image", {
+            method: "put",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: this.state.user.id
+            })
+          })
+            .then(response => response.json())
+            .then(count => {
+              this.setState(Object.assign(this.state.user, { entries: count }))
+            })
+            .catch(console.log)
+        }
+        this.displayFaceBox(this.calculateFaceLocation(response))
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(err => console.log(err))
   }
 
   onRouteChange = route => {
