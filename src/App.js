@@ -13,7 +13,7 @@ import "./App.css"
 const particleParams = {
   particles: {
     number: {
-      value: 90
+      value: 60
     },
     size: {
       value: 2,
