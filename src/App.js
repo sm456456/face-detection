@@ -54,10 +54,6 @@ const initialState = {
   }
 }
 
-const app = new Clarifai.App({
-  apiKey: "c8ce1b46b6754303a017e95566162d04"
-})
-
 class App extends Component {
   constructor() {
     super()
