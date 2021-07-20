@@ -60,7 +60,7 @@ class App extends Component {
     this.state = initialState
   }
 
-  loadUser = data => {
+  loadUser = ([data]) => {
     this.setState({
       user: {
         id: data.id,
